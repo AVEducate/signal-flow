@@ -57,7 +57,7 @@ svg#board{transition:transform .35s ease}
 .deckkeys button{width:92px;height:66px;border-radius:8px;border:2px solid #0a0c10;background:linear-gradient(#3a3f47,#2a2e35);color:#f2f4f7;
   font-family:inherit;font-size:24px;letter-spacing:1px;box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 3px 0 #07090c}
 .deckkeys button:active{transform:translateY(2px);box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 1px 0 #07090c}
-.deckkeys button.play{font-size:30px;color:#fff}
+.deckkeys button.play{font-size:30px;color:#fff;display:inline-flex;align-items:center;justify-content:center}
 .deckkeys span{font-size:12px;letter-spacing:2px;color:#9aa3b2}
 .deckkeys .led{width:8px;height:8px;border-radius:50%;background:#ff3b30;box-shadow:0 0 8px #ff3b30;align-self:flex-start;margin-top:6px}
 
@@ -236,7 +236,7 @@ svg#board{transition:transform .35s ease}
   <div class="screen on" id="title">
     <svg class="wall" id="wall" viewBox="0 0 400 780"></svg>
     <div class="logo"><span class="l1">SIGNAL</span><span class="l2">FLOW</span><span class="by">AV EDUCATE</span></div>
-    <div class="deckkeys"><i class="led"></i><div class="k"><button id="goSettingsB">MENU</button><span>SETTINGS</span></div><div class="k"><button id="goPlayB" class="play">&#9654;</button><span>PLAY</span></div></div>
+    <div class="deckkeys"><i class="led"></i><div class="k"><button id="goSettingsB">MENU</button><span>SETTINGS</span></div><div class="k"><button id="goPlayB" class="play" aria-label="Play"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor"/></svg></button><span>PLAY</span></div></div>
   </div>
 
 
@@ -1370,6 +1370,7 @@ function faultText(i){                     // why a destination with signal isn'
 /* =========================================================
    DRAWING
    ========================================================= */
+function noEmoji(t){ return String(t).replace(/[\u25B6\u25C0]/g, '$&\uFE0E'); }   // ▶ ◀ as plain text arrows, not iPhone emoji
 function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 function onConverterBox(j){                    // jacks on the small light-metal gear get silver knurled BNCs
   if (j.own[0] !== 'b') return false;
@@ -1782,7 +1783,7 @@ const DECOR = (() => {
     if (val) o += label(x, y+r+16.5, val, '#7CF2C9', 5, 'middle');
     return o;
   }
-  const key = (x, y, w, h, t, on, onCol='#ffcf4a', size=5.5) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${on?onCol:'#33383f'}" stroke="#0a0c10" ${on?'filter="url(#glow)"':''}/>` + label(x+w/2, y+h/2+size*.36, t, on?'#1d2026':'#c9d1dc', size, 'middle');
+  const key = (x, y, w, h, t, on, onCol='#ffcf4a', size=5.5) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${on?onCol:'#33383f'}" stroke="#0a0c10" ${on?'filter="url(#glow)"':''}/>` + label(x+w/2, y+h/2+size*.36, noEmoji(t), on?'#1d2026':'#c9d1dc', size, 'middle');
 
   /* ---------- test patterns (8-bit values per the standards) ---------- */
   function smpte78(){                                 // SMPTE ECR 1-1978, 4:3; PLUGE 3.5 / 7.5 / 11.5 IRE
@@ -2553,7 +2554,7 @@ function deckSVG(d, i){
       const bx = x + 44 + (n%2)*19, by = y + 8 + Math.floor(n/2)*15;
       const lit = k === '●' && ok;
       o += `<rect x="${bx}" y="${by}" width="16" height="12" rx="2" fill="${lit ? '#ff3b30' : '#2f343c'}" stroke="#0a0c10" stroke-width="1"/>`;
-      o += `<text x="${bx+8}" y="${by+8.6}" text-anchor="middle" font-size="${k.length > 1 ? 5 : 6.5}" font-weight="700" fill="${lit ? '#fff' : '#9aa3b2'}">${k}</text>`;
+      o += `<text x="${bx+8}" y="${by+8.6}" text-anchor="middle" font-size="${k.length > 1 ? 5 : 6.5}" font-weight="700" fill="${lit ? '#fff' : '#9aa3b2'}">${noEmoji(k)}</text>`;
     });
     lx = x + 86;
   }
